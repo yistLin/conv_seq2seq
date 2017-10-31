@@ -32,8 +32,8 @@ import abc
 
 import six
 
-from tensorflow.contrib.distributions.python.ops import bernoulli
-from tensorflow.contrib.distributions.python.ops import categorical
+from tensorflow.contrib.distributions import Bernoulli
+from tensorflow.contrib.distributions import Categorical
 from tensorflow.python.framework import dtypes
 from tensorflow.python.framework import ops
 from tensorflow.python.layers import base as layers_base
@@ -264,7 +264,7 @@ class ScheduledEmbeddingTrainingHelper(TrainingHelper):
       select_sample_noise = random_ops.random_uniform(
           [self.batch_size], seed=self._scheduling_seed)
       select_sample = (self._sampling_probability > select_sample_noise)
-      sample_id_sampler = categorical.Categorical(logits=outputs)
+      sample_id_sampler = Categorical(logits=outputs)
       return array_ops.where(
           select_sample,
           sample_id_sampler.sample(seed=self._seed),
@@ -384,7 +384,7 @@ class ScheduledOutputTrainingHelper(TrainingHelper):
   def sample(self, time, outputs, state, name=None):
     with ops.name_scope(name, "ScheduledOutputTrainingHelperSample",
                         [time, outputs, state]):
-      sampler = bernoulli.Bernoulli(probs=self._sampling_probability)
+      sampler = Bernoulli(probs=self._sampling_probability)
       return math_ops.cast(
           sampler.sample(sample_shape=self.batch_size, seed=self._seed),
           dtypes.bool)
